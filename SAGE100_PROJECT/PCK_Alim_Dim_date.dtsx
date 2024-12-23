@@ -1,0 +1,69 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="3/23/2024 11:34:38 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-RA7FIPT"
+  DTS:CreatorName="DESKTOP-RA7FIPT\LENOVO"
+  DTS:DelayValidation="True"
+  DTS:DTSID="{7C880D90-3857-495C-B3C9-4DF8D671302B}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5270.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="PCK_Alim_Dim_Date"
+  DTS:PackageType="5"
+  DTS:VersionBuild="11"
+  DTS:VersionGUID="{E43BBEA5-B4A8-4495-861D-D963EF3B6517}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{06F68BF6-9331-41DA-BD97-9BB420D37E9E}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="VARS_NBLignes">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\EST - Create and Load Dim_Date If not Exists"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A42BBAE1-00FA-4166-9EB2-A042877501DF}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="EST - Create and Load Dim_Date If not Exists"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{66B3BB88-E070-415A-B03B-107A9731BCD7}"
+          SQLTask:SqlStatementSource="IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND  TABLE_NAME = 'DDT_Dim_Date')&#xA;BEGIN&#xA;&#xA;CREATE TABLE [dbo].[DDT_Dim_Date]&#xA;(&#xA;    DDT_IdDate INT PRIMARY KEY,&#xA;    DDT_Date DATE,&#xA;    DDT_Annee INT,&#xA;    DDT_NumMois INT,&#xA;    DDT_NomMois VARCHAR(50),&#xA;    DDT_NumJourMois INT,&#xA;    DDT_NumJourSemaine INT,&#xA;    DDT_NumTrimestre INT,&#xA;    DDT_NomTrimestre VARCHAR(50),&#xA;    DDT_NumSemestre INT,&#xA;    DDT_NomSemestre VARCHAR(50)&#xA;);&#xA;&#xA;INSERT INTO [dbo].[DDT_Dim_Date]&#xA;           ([DDT_IdDate]&#xA;           ,[DDT_Date]&#xA;           ,[DDT_Annee]&#xA;           ,[DDT_NumMois]&#xA;           ,[DDT_NomMois]&#xA;           ,[DDT_NumJourMois]&#xA;           ,[DDT_NumJourSemaine]&#xA;           ,[DDT_NumTrimestre]&#xA;           ,[DDT_NomTrimestre]&#xA;           ,[DDT_NumSemestre]&#xA;           ,[DDT_NomSemestre])&#xA;     VALUES&#xA;           (1&#xA;           ,CAST('12/31/9999' AS DATE)&#xA;           ,0&#xA;           ,0&#xA;           ,'Inconnu'&#xA;           ,0&#xA;           ,0&#xA;           ,0&#xA;           ,'Inconnu'&#xA;           ,0&#xA;           ,'Inconnu');&#xA;&#xA;DECLARE @StartDate DATETIME = '2010-01-01'; -- Date de début&#xA;DECLARE @EndDate DATETIME = '2025-01-01';  -- Date de fin&#xA;&#xA;DECLARE&#xA;    @DayOfWeekInMonth INT,&#xA;    @DayOfWeekInYear INT,&#xA;    @DayOfQuarter INT,&#xA;    @WeekOfMonth INT,&#xA;    @CurrentYear INT,&#xA;    @CurrentMonth INT,&#xA;    @CurrentQuarter INT;&#xA;&#xA;DECLARE @DayOfWeek TABLE (DOW INT, MonthCount INT, QuarterCount INT, YearCount INT);&#xA;&#xA;INSERT INTO @DayOfWeek VALUES (1, 0, 0, 0);&#xA;INSERT INTO @DayOfWeek VALUES (2, 0, 0, 0);&#xA;INSERT INTO @DayOfWeek VALUES (3, 0, 0, 0);&#xA;INSERT INTO @DayOfWeek VALUES (4, 0, 0, 0);&#xA;INSERT INTO @DayOfWeek VALUES (5, 0, 0, 0);&#xA;INSERT INTO @DayOfWeek VALUES (6, 0, 0, 0);&#xA;INSERT INTO @DayOfWeek VALUES (7, 0, 0, 0);&#xA;&#xA;DECLARE @CurrentDate AS DATETIME = @StartDate;&#xA;SET @CurrentMonth = DATEPART(MM, @CurrentDate);&#xA;SET @CurrentYear = DATEPART(YY, @CurrentDate);&#xA;SET @CurrentQuarter = DATEPART(QQ, @CurrentDate);&#xA;&#xA;WHILE @CurrentDate &lt; @EndDate&#xA;BEGIN&#xA;    IF @CurrentMonth != DATEPART(MM, @CurrentDate) &#xA;    BEGIN&#xA;        UPDATE @DayOfWeek SET MonthCount = 0;&#xA;        SET @CurrentMonth = DATEPART(MM, @CurrentDate);&#xA;    END;&#xA;&#xA;    IF @CurrentQuarter != DATEPART(QQ, @CurrentDate)&#xA;    BEGIN&#xA;        UPDATE @DayOfWeek SET QuarterCount = 0;&#xA;        SET @CurrentQuarter = DATEPART(QQ, @CurrentDate);&#xA;    END;&#xA;&#xA;    IF @CurrentYear != DATEPART(YY, @CurrentDate)&#xA;    BEGIN&#xA;        UPDATE @DayOfWeek SET YearCount = 0;&#xA;        SET @CurrentYear = DATEPART(YY, @CurrentDate);&#xA;    END;&#xA;&#xA;    UPDATE @DayOfWeek SET MonthCount = MonthCount + 1, QuarterCount = QuarterCount + 1, YearCount = YearCount + 1 WHERE DOW = DATEPART(DW, @CurrentDate);&#xA;&#xA;    SELECT @DayOfWeekInMonth = MonthCount, @DayOfQuarter = QuarterCount, @DayOfWeekInYear = YearCount FROM @DayOfWeek WHERE DOW = DATEPART(DW, @CurrentDate);&#xA;&#xA;    INSERT INTO [dbo].[DDT_Dim_Date]&#xA;    SELECT&#xA;        CONVERT(INT, FORMAT(@CurrentDate, 'yyyyMMdd')) AS DDT_IdDate,&#xA;        @CurrentDate AS DDT_Date,&#xA;        YEAR(@CurrentDate) AS DDT_Annee,&#xA;        MONTH(@CurrentDate) AS DDT_NumMois,&#xA;        DATENAME(MONTH, @CurrentDate) AS DDT_NomMois,&#xA;        DAY(@CurrentDate) AS DDT_NumJourMois,&#xA;        DATEPART(WEEKDAY, @CurrentDate) AS DDT_NumJourSemaine,&#xA;        DATEPART(QQ, @CurrentDate) AS DDT_NumTrimestre,&#xA;        CASE DATEPART(QQ, @CurrentDate)&#xA;            WHEN 1 THEN 'Premier Trimestre'&#xA;            WHEN 2 THEN 'Deuxième Trimestre'&#xA;            WHEN 3 THEN 'Troisième Trimestre'&#xA;            WHEN 4 THEN 'Quatrième Trimestre'&#xA;        END AS DDT_NomTrimestre,&#xA;        CASE&#xA;            WHEN MONTH(@CurrentDate) &lt;= 6 THEN 1&#xA;            ELSE 2&#xA;        END AS DDT_NumSemestre,&#xA;        CASE&#xA;            WHEN MONTH(@CurrentDate) &lt;= 6 THEN 'Premier Semestre'&#xA;            ELSE 'Deuxième Semestre'&#xA;        END AS DDT_NomSemestre;&#xA;&#xA;    SET @CurrentDate = DATEADD(DAY, 1, @CurrentDate);&#xA;END;&#xA;END;&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="294.4,41.6"
+          Id="Package\EST - Create and Load Dim_Date If not Exists"
+          TopLeft="129.285716487437,53.5294125154357" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
